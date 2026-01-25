@@ -4,6 +4,7 @@ import { Command } from "commander";
 import fs from "node:fs"
 import path from "node:path"
 import { scanFiles } from "./scanner.js";
+import { findUndocumentedFunctions } from "./parser.js";
 
 const program = new Command();
 
@@ -24,11 +25,22 @@ if (!fs.existsSync(targetPath)) {
 
 console.log("🔍 Analyzing...\n");
 
-// Logica fake (per ora)
+// Ricerca dei file analizzabili
 const files = scanFiles(targetPath);
+console.log(`✓ Found ${files.length} files`);
 
-console.log(`✓ Analisi completata`);
-console.log(`✓ ${files.length} file trovati`);
+var undocumentedFunctionsCount: number = 0;
+files.forEach(f => {
+    // Ricerca funzioni senza documentazione
+    const functions = findUndocumentedFunctions(f);
+    undocumentedFunctionsCount += functions.length;
+})
+console.log(`✓ Found ${undocumentedFunctionsCount} undocumented functions`);
+
+
+
+
+
 console.log(
     options.apply
         ? "✍️ Modalità apply attiva (non fa ancora nulla)"

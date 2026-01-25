@@ -16,7 +16,8 @@
     "comentia": "./dist/cli.js"
   },
   "dependencies": {
-    "commander": "^14.0.2"
+    "commander": "^14.0.2",
+    "ts-morph": "^27.0.2"
   },
   "devDependencies": {
     "@types/node": "^25.0.10",
