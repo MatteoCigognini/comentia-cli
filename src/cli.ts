@@ -43,6 +43,6 @@ console.log(`✓ Found ${undocumentedFunctionsCount} undocumented functions`);
 
 console.log(
     options.apply
-        ? "✍️ Modalità apply attiva (non fa ancora nulla)"
-        : "⚠️ 0 file modificati (preview mode)"
+        ? "Modalità apply attiva (non fa ancora nulla)"
+        : "0 file modificati (preview mode)"
 );
