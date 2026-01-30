@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
+import "dotenv/config";
 import { Command } from "commander";
 import fs from "node:fs"
 import path from "node:path"
 import { scanFiles } from "./scanner.js";
 import { findUndocumentedFunctions } from "./parser.js";
+import { serializeFunction } from "./serializer.js";
+import { buildPrompt } from "./llm/prompt.js";
+import { generateDoc } from "./llm/gpt.js";
 
 const program = new Command();
 
@@ -34,6 +38,18 @@ files.forEach(f => {
     // Ricerca funzioni senza documentazione
     const functions = findUndocumentedFunctions(f);
     undocumentedFunctionsCount += functions.length;
+
+    // Iterazione delle funzioni senza documentazione
+    functions.forEach(async fn => {
+        const data = serializeFunction(fn);
+        const prompt = buildPrompt(data);
+
+        const doc = await generateDoc(prompt);
+
+        console.log("📄", f);
+        console.log(doc);
+        console.log("-".repeat(40));
+    });
 })
 console.log(`✓ Found ${undocumentedFunctionsCount} undocumented functions`);
 

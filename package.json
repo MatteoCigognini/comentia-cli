@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "commander": "^14.0.2",
+    "dotenv": "^17.2.3",
     "ts-morph": "^27.0.2"
   },
   "devDependencies": {
