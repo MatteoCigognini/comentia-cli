@@ -29,8 +29,8 @@ export async function runPipeline(options: {
 
             if (options.apply) {
                 backupFile(file, options.targetPath);
-                applyDoc(fn, doc);
-                await fn.getSourceFile().save();
+                // applyDoc(fn, doc);
+                // await fn.getSourceFile().save();
             }
         }
     }
