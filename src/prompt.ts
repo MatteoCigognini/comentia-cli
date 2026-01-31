@@ -1,24 +1,57 @@
+import type { DocTone } from "./types.js";
+
 export function buildPrompt(fn: {
     name: string;
+    params: string[];
     signature?: string;
     body?: string;
-}) {
+    returnType?: string;
+    isAsync: boolean;
+}, tone: DocTone) {
+    const toneInstruction = getToneInstruction(tone);
+
     return `
-You are a senior software developer.
+You are a senior TypeScript developer.
 
-Write a concise JSDoc comment for the following function.
-Rules:
-- Do NOT change the code
-- Do NOT explain obvious things
-- Use @param and @returns when applicable
-- Max 6 lines
+${toneInstruction}
 
-Function:
-${fn.signature}
+Generate a JSDoc comment for the following function.
 
-Body:
+Function name: ${fn.name}
+Parameters: ${fn.params.length ? fn.params.join(", ") : "none"}
+Return type: ${fn.returnType}
+Function body:
+\`\`\`ts
 ${fn.body}
+\`\`\`
 
-Return ONLY the JSDoc comment.
+Rules:
+- Output ONLY the JSDoc comment
+- Explain parameters in plain language
+- Describe the return in plain language if tone is casual
+- Avoid technical import paths in the return
+- Include behavior and side effects (logging, file writes, async, etc.)
+
 `.trim();
+}
+
+
+function getToneInstruction(tone: DocTone): string {
+    switch (tone) {
+        case "casual":
+            return `
+Use a friendly, clear and explanatory tone.
+Explain what the function does in plain language.
+Describe the return type in simple words, not TypeScript import paths.
+Include side effects like logging or file operations.
+`;
+        case "technical":
+        default:
+            return `
+Use a concise and technical tone.
+Focus on behavior, parameters, return type, and side effects.
+Use proper TypeScript types, including imported types if necessary.
+Avoid storytelling or informal language.
+`;
+    }
 }

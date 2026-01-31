@@ -8,3 +8,5 @@ export type DocumentableFunction =
     | FunctionDeclaration
     | MethodDeclaration
     | ArrowFunction;
+
+export type DocTone = "technical" | "casual";

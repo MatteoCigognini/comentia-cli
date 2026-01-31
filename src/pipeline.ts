@@ -4,11 +4,13 @@ import { serializeFunction } from "./serializer.js";
 import { buildPrompt } from "./prompt.js";
 import { generateDoc } from "./llm.js";
 import { applyDoc, backupFile } from "./writer.js";
+import type { DocTone } from "./types.js";
 
 export async function runPipeline(options: {
     targetPath: string;
     apply?: boolean;
     outDir?: string;
+    tone: DocTone;
 }) {
     const files = scanFiles(options.targetPath);
 
@@ -20,7 +22,7 @@ export async function runPipeline(options: {
 
         for (const fn of functions) {
             const data = serializeFunction(fn);
-            const prompt = buildPrompt(data);
+            const prompt = buildPrompt(data, options.tone);
             const doc = await generateDoc(prompt);
 
             console.log("📄", file);
