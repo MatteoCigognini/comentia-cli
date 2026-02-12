@@ -1,6 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 
+export const SUPPORTED_LANGUAGES = ["ts", "js", "php"] as const;
+export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
+
+const LANGUAGE_EXTENSION: Record<SupportedLanguage, string[]> = {
+    "ts": ['.ts'],
+    "js": ['.js'],
+    "php": ['.php'],
+};
+
 const DEFAULT_IGNORE = new Set([
     "node_modules",
     ".git",
@@ -12,8 +21,9 @@ const DEFAULT_IGNORE = new Set([
 
 export function scanFiles(
     targetPath: string,
-    extensions: string[] = [".ts", ".js"]
+    languages: SupportedLanguage[] = ["ts", "js"]
 ): string[] {
+    const extensions = languages.flatMap(l => LANGUAGE_EXTENSION[l])
     const result: string[] = [];
 
     function walk(current: string) {
@@ -37,4 +47,19 @@ export function scanFiles(
     walk(targetPath);
 
     return result;
+}
+
+export function detectLanguage(filePath: string): SupportedLanguage {
+    const ext = path.extname(filePath);
+
+    switch (ext) {
+        case ".ts":
+            return "ts";
+        case ".js":
+            return "js";
+        case ".php":
+            return "php";
+        default:
+            throw new Error(`Unsupported file type: ${ext}`);
+    }
 }

@@ -1,32 +1,28 @@
 import type { DocTone } from "./types.js";
+import type { DocumentableFunction } from "./parsers/types.js";
 
-export function buildPrompt(fn: {
-    name: string;
-    params: string[];
-    signature?: string;
-    body?: string;
-    returnType?: string;
-    isAsync: boolean;
-}, tone: DocTone) {
+export function buildPrompt(fn: DocumentableFunction, tone: DocTone) {
     const toneInstruction = getToneInstruction(tone);
 
+    const { codeLang, docStyle } = getLanguageConfig(fn.language);
+
     return `
-You are a senior TypeScript developer.
+You are a senior ${fn.language.toUpperCase()} developer.
 
 ${toneInstruction}
 
-Generate a JSDoc comment for the following function.
+Generate a ${docStyle} comment for the following function.
 
 Function name: ${fn.name}
 Parameters: ${fn.params.length ? fn.params.join(", ") : "none"}
 Return type: ${fn.returnType}
 Function body:
-\`\`\`ts
-${fn.body}
+\`\`\`${codeLang}
+${fn.bodyText}
 \`\`\`
 
 Rules:
-- Output ONLY the JSDoc comment
+- Output ONLY the ${docStyle} comment
 - Explain parameters in plain language
 - Describe the return in plain language if tone is casual
 - Avoid technical import paths in the return
@@ -35,6 +31,17 @@ Rules:
 `.trim();
 }
 
+function getLanguageConfig(language: string) {
+  switch (language) {
+    case "ts":
+    case "js":
+      return { codeLang: "ts", docStyle: "JSDoc" };
+    case "php":
+      return { codeLang: "php", docStyle: "PHPDoc" };
+    default:
+      return { codeLang: language, docStyle: "Doc" };
+  }
+}
 
 function getToneInstruction(tone: DocTone): string {
     switch (tone) {

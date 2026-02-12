@@ -7,6 +7,7 @@ const program = new Command();
 
 program
     .argument("<target>")
+    .option("--languages", "Supported languages", "ts,js")
     .option("--tone <type>", "Documentation tone: technical | casual", "technical")
     .option("--apply", "Write documentation to files")
     .option("--out <dir>", "Write output to directory")
@@ -20,6 +21,7 @@ const count = await runPipeline({
     apply: options.apply,
     outDir: options.out,
     tone: options.tone,
+    languages: options.languages,
 });
 
 console.log(`✓ Found ${count} undocumented functions`);
