@@ -1,6 +1,7 @@
 import { parseTypeScript } from "./typescript.js";
 import type { DocumentableFunction } from "./types.js";
 import type { SupportedLanguage } from "../scanner.js";
+import { parsePHP } from "./php.js";
 
 export function parseFile(
     filePath: string,
@@ -12,8 +13,7 @@ export function parseFile(
             return parseTypeScript(filePath);
 
         case "php":
-            // placeholder per ora
-            return [];
+            return parsePHP(filePath);
 
         default:
             return [];
