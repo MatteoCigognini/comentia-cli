@@ -1,7 +1,9 @@
-import { Engine, Node } from "php-parser"
+import phpParser from "php-parser";
 import type { DocumentableFunction } from "./types.js";
 import fs from "node:fs";
 import path from "node:path"
+
+const { Engine } = phpParser;
 
 const parserEngine = new Engine({
     parser: {
@@ -22,7 +24,7 @@ export function parsePHP(
     const functions: DocumentableFunction[] = [];
 
     // Funzione ricorsiva per camminare l'AST
-    function walk(node: Node) {
+    function walk(node: any) {
         if (node.kind === "function") {
             const funcNode = node as any;
             functions.push({
